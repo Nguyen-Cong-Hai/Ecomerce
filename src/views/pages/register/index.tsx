@@ -234,7 +234,14 @@ const RegisterPage: NextPage<TProps> = () => {
             >
               <Typography>{'Do you have already account?'}</Typography>
 
-              <Link href='/login'>{'Login'}</Link>
+              <Link
+                href='/login'
+                style={{
+                  color: theme.palette.primary.main
+                }}
+              >
+                {'Login'}
+              </Link>
             </Box>
 
             <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>

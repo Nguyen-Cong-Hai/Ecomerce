@@ -29,11 +29,12 @@ import * as yup from 'yup'
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 
 //React
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 //Image
 import LoginDark from '/public/images/login-dark.png'
 import LoginLight from '/public/images/login-light.png'
+import { useAuth } from 'src/hooks/useAuth'
 
 type TProps = {}
 
@@ -44,6 +45,9 @@ const LoginPage: NextPage<TProps> = () => {
 
   //Theme
   const theme = useTheme()
+
+  //Context
+  const { login } = useAuth()
 
   const schema = yup.object().shape({
     email: yup.string().required('The field is required').matches(EMAIL_REG, 'The field is must email type'),
@@ -59,14 +63,18 @@ const LoginPage: NextPage<TProps> = () => {
     formState: { errors }
   } = useForm({
     defaultValues: {
-      email: '',
-      password: ''
+      email: 'admin@gmail.com',
+      password: '123456789Kha@'
     },
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
 
   const onSubmit = (data: { email: string; password: string }) => {
+    if (!Object.keys(errors).length) {
+      login({ ...data, rememberMe: isRemember })
+    }
+
     console.log('>>> data', data)
   }
 
@@ -215,7 +223,14 @@ const LoginPage: NextPage<TProps> = () => {
             >
               <Typography>{"Don't have an account?"}</Typography>
 
-              <Link href='/register'>{'Register'}</Link>
+              <Link
+                href='/register'
+                style={{
+                  color: theme.palette.primary.main
+                }}
+              >
+                {'Register'}
+              </Link>
             </Box>
 
             <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
