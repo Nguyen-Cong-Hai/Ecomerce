@@ -14,6 +14,9 @@ import { NextPage } from 'next'
 import ListVerticalLayout from './ListVerticalLayout'
 
 //Components
+import IconifyIcon from 'src/components/Icon'
+
+//Components
 
 const drawerWidth: number = 240
 
@@ -57,7 +60,9 @@ const VerticalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
           px: [1]
         }}
       >
-        <IconButton onClick={toggleDrawer}></IconButton>
+        <IconButton onClick={toggleDrawer}>
+          <IconifyIcon icon='mingcute:left-line' />
+        </IconButton>
       </Toolbar>
       <Divider />
       <ListVerticalLayout />

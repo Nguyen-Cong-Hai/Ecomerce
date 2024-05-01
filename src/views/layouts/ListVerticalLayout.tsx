@@ -14,26 +14,28 @@ import { VerticalItems } from 'src/configs/layout'
 
 type TProps = {}
 
-const ListVerticalLayout: NextPage<TProps> = () => {
-  const [open, setOpen] = useState(true)
+const RecursiveItems = ({ items, level }: { items: any; level: number }) => {
+  const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({})
 
-  const handleClick = () => {
-    setOpen(!open)
+  const handleClick = (title: string) => {
+    setOpenItems(prev => ({
+      ...prev,
+      [title]: !prev[title]
+    }))
   }
 
   return (
-    <List
-      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-      component='nav'
-      aria-labelledby='nested-list-subheader'
-    >
-      {VerticalItems?.map(item => {
+    <>
+      {items?.map((item: any) => {
         return (
           <Fragment key={item?.title}>
             <ListItemButton
+              sx={{
+                padding: `8px 10px 8px ${level * 10}px`
+              }}
               onClick={() => {
                 if (item?.childrens) {
-                  handleClick()
+                  handleClick(item?.title)
                 }
               }}
             >
@@ -41,28 +43,43 @@ const ListVerticalLayout: NextPage<TProps> = () => {
                 <IconifyIcon icon={item?.icon} />
               </ListItemIcon>
               <ListItemText primary={item?.title} />
+              {item?.childrens && item.childrens.length > 0 && (
+                <>
+                  {openItems[item.title] ? (
+                    <IconifyIcon
+                      icon='material-symbols:expand-less'
+                      style={{
+                        transform: 'rotate(180deg)'
+                      }}
+                    />
+                  ) : (
+                    <IconifyIcon icon='material-symbols:expand-less' />
+                  )}
+                </>
+              )}
             </ListItemButton>
             {item?.childrens && item?.childrens?.length > 0 && (
               <>
-                {item?.childrens?.map(child => {
-                  return (
-                    <Collapse in={open} timeout='auto' unmountOnExit>
-                      <List component='div' disablePadding>
-                        <ListItemButton sx={{ pl: 4 }}>
-                          <ListItemIcon>
-                            <IconifyIcon icon={child?.icon} />
-                          </ListItemIcon>
-                          <ListItemText primary={child?.title} />
-                        </ListItemButton>
-                      </List>
-                    </Collapse>
-                  )
-                })}
+                <Collapse in={openItems[item.title]} timeout='auto' unmountOnExit>
+                  <RecursiveItems items={item?.childrens} level={level + 1} />
+                </Collapse>
               </>
             )}
           </Fragment>
         )
       })}
+    </>
+  )
+}
+
+const ListVerticalLayout: NextPage<TProps> = () => {
+  return (
+    <List
+      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+      component='nav'
+      aria-labelledby='nested-list-subheader'
+    >
+      <RecursiveItems items={VerticalItems} level={1} />
     </List>
   )
 }
