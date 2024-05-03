@@ -12,7 +12,9 @@ import { NextPage } from 'next'
 
 //Components
 import IconifyIcon from 'src/components/Icon'
-import UserDropdown from 'src/components/user-dropdown'
+import UserDropdown from 'src/views/layouts/components/user-dropdown'
+import ModeToggle from './components/mode-toggle'
+import LanguageDropdown from './components/language-dropdown'
 
 const drawerWidth: number = 240
 
@@ -32,7 +34,7 @@ const AppBar = styled(MuiAppBar, {
   zIndex: theme.zIndex.drawer + 1,
   backgroundColor:
     theme.palette.mode === 'light' ? theme.palette.customColors.lightPaperBg : theme.palette.customColors.darkPaperBg,
-  color: theme.palette.primary.main,
+  color: theme.palette.text.primary,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -74,12 +76,9 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
         <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
           Dashboard
         </Typography>
+        <LanguageDropdown />
+        <ModeToggle />
         <UserDropdown />
-        {/* <IconButton color='inherit'>
-          <Badge badgeContent={4} color='primary'>
-            <IconifyIcon icon='iconamoon:notification-light' />
-          </Badge>
-        </IconButton> */}
       </Toolbar>
     </AppBar>
   )
