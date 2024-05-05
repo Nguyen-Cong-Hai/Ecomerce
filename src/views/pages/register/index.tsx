@@ -29,9 +29,10 @@ import { registerAuthAsync } from 'src/stores/apps/auth/actions'
 import { AppDispatch, RootState } from 'src/stores'
 import toast from 'react-hot-toast'
 import FallbackSpinner from 'src/components/fall-back'
-import { resetInitialState } from 'src/stores/apps/auth'
+
 import { useRouter } from 'next/router'
 import { ROUTE_CONFIG } from 'src/configs/route'
+import { resetInitialState } from 'src/stores/apps/auth'
 
 type TProps = {}
 
@@ -43,7 +44,7 @@ const RegisterPage: NextPage<TProps> = () => {
   //Redux
   const dispatch: AppDispatch = useDispatch()
 
-  const { isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
+  const { message, isError, isSuccess, isLoading } = useSelector((state: RootState) => state.auth)
 
   //Route
   const route = useRouter()
