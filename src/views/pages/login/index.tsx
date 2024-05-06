@@ -29,11 +29,15 @@ import * as yup from 'yup'
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 
 //React
-import { useContext, useState } from 'react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 //Image
 import LoginDark from '/public/images/login-dark.png'
 import LoginLight from '/public/images/login-light.png'
+
+//Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
 type TProps = {}
@@ -49,6 +53,9 @@ const LoginPage: NextPage<TProps> = () => {
   //Context
   const { login } = useAuth()
 
+  //Transalte
+  const { t } = useTranslation()
+
   const schema = yup.object().shape({
     email: yup.string().required('The field is required').matches(EMAIL_REG, 'The field is must email type'),
     password: yup
@@ -60,7 +67,8 @@ const LoginPage: NextPage<TProps> = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors },
+    setError
   } = useForm({
     defaultValues: {
       email: 'admin@gmail.com',
@@ -72,10 +80,12 @@ const LoginPage: NextPage<TProps> = () => {
 
   const onSubmit = (data: { email: string; password: string }) => {
     if (!Object.keys(errors).length) {
-      login({ ...data, rememberMe: isRemember })
+      login({ ...data, rememberMe: isRemember }, err => {
+        if (err?.response?.data?.typeError === 'INVALID') {
+          toast.error(t('the_email_or_password_wrong'))
+        }
+      })
     }
-
-    console.log('>>> data', data)
   }
 
   return (
