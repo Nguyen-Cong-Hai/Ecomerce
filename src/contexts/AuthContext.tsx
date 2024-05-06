@@ -17,6 +17,8 @@ import { CONFIG_API } from 'src/configs/api'
 
 import instanceAxios from 'src/helpers/axios'
 import { clearLocalUserData, setLocalUserData } from 'src/helpers/storage'
+import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -41,6 +43,9 @@ const AuthProvider = ({ children }: Props) => {
 
   // ** Hooks
   const router = useRouter()
+
+  //Translate
+  const { t } = useTranslation()
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
@@ -71,10 +76,8 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    setLoading(true)
     LoginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        setLoading(false)
         params.rememberMe
           ? setLocalUserData(
               JSON.stringify(response.data.user),
@@ -82,6 +85,8 @@ const AuthProvider = ({ children }: Props) => {
               response.data.refresh_token
             )
           : null
+
+        toast.success(t('login_success'))
 
         const returnUrl = router.query.returnUrl
 
@@ -93,7 +98,6 @@ const AuthProvider = ({ children }: Props) => {
       })
 
       .catch(err => {
-        setLoading(false)
         if (errorCallback) errorCallback(err)
       })
   }
