@@ -16,7 +16,7 @@ import { LoginAuth, LogoutAuth } from 'src/services/auth'
 import { CONFIG_API } from 'src/configs/api'
 
 import instanceAxios from 'src/helpers/axios'
-import { clearLocalUserData, setLocalUserData } from 'src/helpers/storage'
+import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
 import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
 
@@ -78,13 +78,11 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     LoginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        params.rememberMe
-          ? setLocalUserData(
-              JSON.stringify(response.data.user),
-              response.data.access_token,
-              response.data.refresh_token
-            )
-          : null
+        if (params.rememberMe) {
+          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+        } else {
+          setTemporaryToken(response.data.access_token)
+        }
 
         toast.success(t('login_success'))
 
